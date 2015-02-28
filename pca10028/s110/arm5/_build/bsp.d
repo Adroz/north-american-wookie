@@ -21,9 +21,9 @@
 .\_build\bsp.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\1.1.4\Device\Include\nrf51_deprecated.h
 .\_build\bsp.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\1.1.4\Device\Include\compiler_abstraction.h
 .\_build\bsp.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\nrf_error.h
-.\_build\bsp.o: C:\Users\Nik\Google Drive\Dump\workspace\ble_peripheral\ble_app_template\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_timer.h
-.\_build\bsp.o: C:\Users\Nik\Google Drive\Dump\workspace\ble_peripheral\ble_app_template\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_error.h
+.\_build\bsp.o: C:\Users\Nik\Documents\GitHub\north-american-wookie\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_timer.h
+.\_build\bsp.o: C:\Users\Nik\Documents\GitHub\north-american-wookie\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_error.h
 .\_build\bsp.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_Libraries\1.1.1\util\app_util.h
-.\_build\bsp.o: C:\Users\Nik\Google Drive\Dump\workspace\ble_peripheral\ble_app_template\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_scheduler.h
-.\_build\bsp.o: C:\Users\Nik\Google Drive\Dump\workspace\ble_peripheral\ble_app_template\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_gpiote.h
-.\_build\bsp.o: C:\Users\Nik\Google Drive\Dump\workspace\ble_peripheral\ble_app_template\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_button.h
+.\_build\bsp.o: C:\Users\Nik\Documents\GitHub\north-american-wookie\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_scheduler.h
+.\_build\bsp.o: C:\Users\Nik\Documents\GitHub\north-american-wookie\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_gpiote.h
+.\_build\bsp.o: C:\Users\Nik\Documents\GitHub\north-american-wookie\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_button.h

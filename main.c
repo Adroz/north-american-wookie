@@ -41,6 +41,7 @@
 #include "app_timer.h"
 #include "app_gpiote.h"
 #include "bsp.h"
+#include "ble_lbs.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -48,7 +49,17 @@
 // YOUR_JOB: Define any other buttons to be used by the applications:
 // #define MY_BUTTON_ID                   1
 
-#define DEVICE_NAME                     "N. American Wookie"                     /**< Name of device. Will be included in the advertising data. */
+
+#define LEDBUTTON_LED_PIN_NO						19																					/** The LED available on the RBL Nano. */
+static ble_lbs_t												m_lbs;
+
+
+#define DEVICE_NAME                     "North American Wookie"                     		/**< Name of device. Will be included in the advertising data. */
+#define BLE_APPEARANCE									0																						/**< The appearance type of the device ("Unknown"). Currently no type for plant/sensor monitoring. */
+
+
+
+
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
@@ -158,9 +169,8 @@ static void gap_params_init(void)
                                           strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
 
-    /* YOUR_JOB: Use an appearance value matching the application's use case.
-    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_);
-    APP_ERROR_CHECK(err_code); */
+    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE);
+    APP_ERROR_CHECK(err_code);
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
@@ -183,10 +193,14 @@ static void advertising_init(void)
 {
     uint32_t      err_code;
     ble_advdata_t advdata;
+		ble_advdata_t scanrsp;
     uint8_t       flags = BLE_GAP_ADV_FLAGS_LE_ONLY_LIMITED_DISC_MODE;
 
     // YOUR_JOB: Use UUIDs for service(s) used in your application.
-    ble_uuid_t adv_uuids[] = {{BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}};
+		// Not sure if this is too large for scan response. Will have to investigate in the future (not super important).
+    ble_uuid_t adv_uuids[] = {{LBS_UUID_SERVICE, m_lbs.uuid_type},
+																{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}, 
+																{BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}};
 
     // Build and set advertising data
     memset(&advdata, 0, sizeof(advdata));
@@ -195,21 +209,46 @@ static void advertising_init(void)
     advdata.include_appearance      = true;
     advdata.flags.size              = sizeof(flags);
     advdata.flags.p_data            = &flags;
-    advdata.uuids_complete.uuid_cnt = sizeof(adv_uuids) / sizeof(adv_uuids[0]);
-    advdata.uuids_complete.p_uuids  = adv_uuids;
+																
+		memset(&scanrsp, 0, sizeof(scanrsp));
+    scanrsp.uuids_complete.uuid_cnt = sizeof(adv_uuids) / sizeof(adv_uuids[0]);
+    scanrsp.uuids_complete.p_uuids  = adv_uuids;
 
     err_code = ble_advdata_set(&advdata, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
 
+
+
+static void led_write_handler(ble_lbs_t * p_lbs, uint8_t led_state)
+{
+		if (led_state)
+		{
+				nrf_gpio_pin_set(LEDBUTTON_LED_PIN_NO);
+		}
+		else
+		{
+				nrf_gpio_pin_clear(LEDBUTTON_LED_PIN_NO);
+		}
+	}
+
 /**@brief Function for initializing services that will be used by the application.
  */
 static void services_init(void)
 {
+	// TODO: Put this dir_set somewhere else.
+		nrf_gpio_pin_dir_set(LEDBUTTON_LED_PIN_NO, NRF_GPIO_PIN_DIR_OUTPUT);
+	
     // YOUR_JOB: Add code to initialize the services used by the application.
+		uint32_t err_code;
+		ble_lbs_init_t init;
+		
+		init.led_write_handler = led_write_handler;
+	
+		err_code = ble_lbs_init(&m_lbs, &init);
+		APP_ERROR_CHECK(err_code);
 }
-
 
 /**@brief Function for initializing security parameters.
  */
@@ -425,6 +464,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     YOUR_JOB: Add service ble_evt handlers calls here, like, for example:
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
     */
+		ble_lbs_on_ble_evt(&m_lbs, p_ble_evt);
 }
 
 
@@ -565,15 +605,15 @@ int main(void)
     bsp_module_init();
     scheduler_init();
     gap_params_init();
-    advertising_init();
     services_init();
+		advertising_init();
     conn_params_init();
     sec_params_init();
 
     // Start execution
     timers_start();
     advertising_start();
-
+	
     // Enter main loop
     for (;;)
     {
