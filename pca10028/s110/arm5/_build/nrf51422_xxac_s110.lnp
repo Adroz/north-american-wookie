@@ -1,6 +1,7 @@
 --cpu Cortex-M0
 ".\_build\main.o"
 ".\_build\ble_lbs.o"
+".\_build\ble_temp_serv.o"
 ".\_build\bsp.o"
 ".\_build\arm_startup_nrf51.o"
 ".\_build\system_nrf51.o"

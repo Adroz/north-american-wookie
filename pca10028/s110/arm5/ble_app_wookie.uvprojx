@@ -173,7 +173,7 @@
             <Capability>1</Capability>
             <DriverSelection>4104</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
+          <bUseTDR>0</bUseTDR>
           <Flash2>BIN\CMSIS_AGDI.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -422,6 +422,16 @@
               <FileName>ble_lbs.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\ble_lbs.h</FilePath>
+            </File>
+            <File>
+              <FileName>ble_temp_serv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\ble_temp_serv.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_temp_serv.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\ble_temp_serv.h</FilePath>
             </File>
           </Files>
         </Group>

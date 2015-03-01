@@ -49,3 +49,4 @@
 .\_build\main.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_Examples\7.2.0\bsp\boards.h
 .\_build\main.o: D:\Development\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_Examples\7.2.0\bsp\pca10028.h
 .\_build\main.o: ..\..\..\ble_lbs.h
+.\_build\main.o: ..\..\..\ble_temp_serv.h

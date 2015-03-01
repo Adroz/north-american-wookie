@@ -42,6 +42,7 @@
 #include "app_gpiote.h"
 #include "bsp.h"
 #include "ble_lbs.h"
+#include "ble_temp_serv.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -50,12 +51,14 @@
 // #define MY_BUTTON_ID                   1
 
 
-#define LEDBUTTON_LED_PIN_NO						19																					/** The LED available on the RBL Nano. */
-static ble_lbs_t												m_lbs;
+#define LEDBUTTON_LED_PIN_NO			19											/** The LED available on the RedBearLabs BLE Nano. */
+static ble_lbs_t						m_lbs;
+static ble_temps_t                      m_temps;
 
 
-#define DEVICE_NAME                     "North American Wookie"                     		/**< Name of device. Will be included in the advertising data. */
-#define BLE_APPEARANCE									0																						/**< The appearance type of the device ("Unknown"). Currently no type for plant/sensor monitoring. */
+
+#define DEVICE_NAME                     "North American Wookie"                     /**< Name of device. Will be included in the advertising data. */
+#define BLE_APPEARANCE					0											/**< The appearance type of the device ("Unknown"). Currently no type for plant/sensor monitoring. */
 
 
 
@@ -193,14 +196,15 @@ static void advertising_init(void)
 {
     uint32_t      err_code;
     ble_advdata_t advdata;
-		ble_advdata_t scanrsp;
+	ble_advdata_t scanrsp;
     uint8_t       flags = BLE_GAP_ADV_FLAGS_LE_ONLY_LIMITED_DISC_MODE;
 
     // YOUR_JOB: Use UUIDs for service(s) used in your application.
-		// Not sure if this is too large for scan response. Will have to investigate in the future (not super important).
-    ble_uuid_t adv_uuids[] = {{LBS_UUID_SERVICE, m_lbs.uuid_type},
-																{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}, 
-																{BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}};
+		// TODO: Not sure if this is too large for scan response. Will have to investigate in the future (not super important).
+    ble_uuid_t adv_uuids[] = {{TEMPS_UUID_SERVICE, m_temps.uuid_type},
+                                /*{LBS_UUID_SERVICE, m_lbs.uuid_type},
+                                {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}, 
+								{BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}*/};
 
     // Build and set advertising data
     memset(&advdata, 0, sizeof(advdata));
@@ -214,7 +218,7 @@ static void advertising_init(void)
     scanrsp.uuids_complete.uuid_cnt = sizeof(adv_uuids) / sizeof(adv_uuids[0]);
     scanrsp.uuids_complete.p_uuids  = adv_uuids;
 
-    err_code = ble_advdata_set(&advdata, NULL);
+    err_code = ble_advdata_set(&advdata, &scanrsp);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -248,6 +252,11 @@ static void services_init(void)
 	
 		err_code = ble_lbs_init(&m_lbs, &init);
 		APP_ERROR_CHECK(err_code);
+
+        ble_temps_init_t temps_init;
+        // temps_init.led_write_handler = led_write_handler;
+        err_code = ble_temps_init(&m_temps, &temps_init);
+        APP_ERROR_CHECK(err_code);
 }
 
 /**@brief Function for initializing security parameters.
@@ -606,7 +615,7 @@ int main(void)
     scheduler_init();
     gap_params_init();
     services_init();
-		advertising_init();
+	advertising_init();
     conn_params_init();
     sec_params_init();
 
